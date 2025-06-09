@@ -1,0 +1,11 @@
+{
+  "mode": "code",
+  "customInstructions": "You are working on a Next.js todo application. When making changes via GitHub comments, ensure all code follows the project's conventions and runs the appropriate linting commands before committing.",
+  "memory": {
+    "enabled": true
+  },
+  "bedrock": {
+    "enabled": true,
+    "model": "anthropic.claude-3-5-sonnet-20241022-v2:0"
+  }
+}
