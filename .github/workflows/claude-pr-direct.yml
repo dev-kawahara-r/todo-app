@@ -1,4 +1,4 @@
-name: Claude PR Assistant
+name: Claude PR Assistant (Direct API)
 
 on:
   issue_comment:
@@ -7,13 +7,13 @@ on:
     types: [created]
 
 jobs:
-  claude-pr:
+  claude-pr-direct:
     if: |
       (github.event_name == 'issue_comment' && 
-       contains(github.event.comment.body, '@claude') && 
+       contains(github.event.comment.body, '@claude-direct') && 
        github.event.issue.pull_request) ||
       (github.event_name == 'pull_request_review_comment' && 
-       contains(github.event.comment.body, '@claude'))
+       contains(github.event.comment.body, '@claude-direct'))
     
     runs-on: ubuntu-latest
     
@@ -58,31 +58,17 @@ jobs:
         id: extract-command
         run: |
           COMMENT_BODY="${{ github.event.comment.body }}"
-          # Extract everything after @claude mention
-          CLAUDE_COMMAND=$(echo "$COMMENT_BODY" | sed -n 's/.*@claude\s*\(.*\)/\1/p')
+          # Extract everything after @claude-direct mention
+          CLAUDE_COMMAND=$(echo "$COMMENT_BODY" | sed -n 's/.*@claude-direct\s*\(.*\)/\1/p')
           echo "command=$CLAUDE_COMMAND" >> $GITHUB_OUTPUT
       
-      - name: Setup AWS credentials for Bedrock
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      
-      - name: Test AWS credentials
-        run: |
-          echo "Testing AWS credentials..."
-          aws sts get-caller-identity
-          echo "Testing Bedrock access..."
-          aws bedrock list-foundation-models --region ${{ secrets.AWS_REGION }}
-      
-      - name: Run Claude Code with Bedrock
+      - name: Run Claude Code with Direct API
         id: claude-run
         run: |
           # Create a temporary file for Claude's response
           RESPONSE_FILE=$(mktemp)
           
-          # Run claude with the command using Bedrock
+          # Run claude with the command using direct API
           npx @anthropic-ai/claude-code@latest "${{ steps.extract-command.outputs.command }}" > "$RESPONSE_FILE" 2>&1 || true
           
           # Read response
@@ -96,8 +82,7 @@ jobs:
           # Clean up
           rm -f "$RESPONSE_FILE"
         env:
-          ANTHROPIC_USE_BEDROCK: "true"
-          ANTHROPIC_MODEL: "anthropic.claude-3-5-sonnet-20241022-v2:0"
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       
       - name: Commit changes if any
         run: |
@@ -119,7 +104,7 @@ jobs:
         run: |
           # Create comment body with escaped backticks
           cat > comment.md << 'COMMENT_EOF'
-          ## Claude Response
+          ## Claude Response (Direct API)
           
           ```
           ${{ steps.claude-run.outputs.response }}
