@@ -66,22 +66,16 @@ jobs:
         run: |
           echo "AWS_REGION from secret: ${{ secrets.AWS_REGION }}"
           echo "Checking if credentials are set..."
-          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+          if [ -z "$AWS_ACCESS_KEY_ID" ]; then
             echo "ERROR: AWS_ACCESS_KEY_ID is empty"
           else
             echo "AWS_ACCESS_KEY_ID is set (length: ${#AWS_ACCESS_KEY_ID})"
           fi
-          if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+          if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
             echo "ERROR: AWS_SECRET_ACCESS_KEY is empty"
           else
             echo "AWS_SECRET_ACCESS_KEY is set"
           fi
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      
-      - name: Test AWS credentials directly
-        run: |
           echo "Testing AWS credentials with environment variables..."
           aws sts get-caller-identity
           echo "Testing Bedrock access..."
