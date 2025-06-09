@@ -80,20 +80,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
-      - name: Setup AWS credentials for Bedrock
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-duration-seconds: 1200
-      
-      - name: Test AWS credentials
+      - name: Test AWS credentials directly
         run: |
-          echo "Testing AWS credentials..."
+          echo "Testing AWS credentials with environment variables..."
           aws sts get-caller-identity
           echo "Testing Bedrock access..."
-          aws bedrock list-foundation-models --region ${{ secrets.AWS_REGION }}
+          aws bedrock list-foundation-models --region $AWS_REGION
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
       
       - name: Run Claude Code with Bedrock
         id: claude-run
@@ -117,6 +113,9 @@ jobs:
         env:
           ANTHROPIC_USE_BEDROCK: "true"
           ANTHROPIC_MODEL: "anthropic.claude-3-5-sonnet-20241022-v2:0"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
       
       - name: Commit changes if any
         run: |
