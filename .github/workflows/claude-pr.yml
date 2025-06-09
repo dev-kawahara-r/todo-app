@@ -62,12 +62,31 @@ jobs:
           CLAUDE_COMMAND=$(echo "$COMMENT_BODY" | sed -n 's/.*@claude\s*\(.*\)/\1/p')
           echo "command=$CLAUDE_COMMAND" >> $GITHUB_OUTPUT
       
+      - name: Debug AWS credentials
+        run: |
+          echo "AWS_REGION from secret: ${{ secrets.AWS_REGION }}"
+          echo "Checking if credentials are set..."
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+            echo "ERROR: AWS_ACCESS_KEY_ID is empty"
+          else
+            echo "AWS_ACCESS_KEY_ID is set (length: ${#AWS_ACCESS_KEY_ID})"
+          fi
+          if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "ERROR: AWS_SECRET_ACCESS_KEY is empty"
+          else
+            echo "AWS_SECRET_ACCESS_KEY is set"
+          fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
       - name: Setup AWS credentials for Bedrock
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+          role-duration-seconds: 1200
       
       - name: Test AWS credentials
         run: |
