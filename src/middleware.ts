@@ -1,6 +1,9 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { authMiddleware } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+export default authMiddleware({
+  // Public routes that don't require authentication
+  publicRoutes: ["/"]
+});
 
 export const config = {
   matcher: [
@@ -10,5 +13,3 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
-
-// export const runtime = 'edge';
