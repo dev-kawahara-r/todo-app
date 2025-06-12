@@ -62,3 +62,16 @@ This repository supports Claude Code integration via AWS Bedrock. You can mentio
 - The project uses ESM modules (`"type": "module"` in package.json)
 - ESLint configured with Next.js recommended rules
 - No test framework currently configured
+
+## コード変更ポリシー
+
+### リポジトリへのコード変更ルール
+- main ブランチへの直接プッシュは行わないでください
+- すべてのコード変更はプルリクエスト（PR）を通して行ってください
+- PR作成後はレビュー依頼を行ってください
+- PRが承認されてからマージしてください
+
+### Claudeの永続的な指示
+- 重要な指示を受けた場合は、このCLAUDE.mdファイルに追記してください
+- これにより、すべてのClaudeインスタンスが今後の会話で指示を参照できるようになります
+- 特に重要なコード変更や開発方針に関する指示を記録してください
