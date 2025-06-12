@@ -13,7 +13,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: 'us-east-1' # リージョンを指定
-          role-to-assume: 'arn:aws:iam::<AWSアカウントID>:role/<IAMロール名>' # 作成した IAM ロールの ARN
+          role-to-assume: 'arn:aws:iam::982534380713:role/GitHubActions-Bedrock-Role' # 作成した IAM ロールの ARN
 
       # プライベートな S3 バケットを読み取ってみる
       - run: aws s3 ls s3://oidc-example
