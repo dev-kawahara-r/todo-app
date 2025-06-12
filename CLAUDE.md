@@ -34,6 +34,14 @@ bun lint
 
 This repository supports Claude Code integration via AWS Bedrock. You can mention `@claude` in PR comments to trigger automated code changes. The integration is configured to use Claude 3.5 Sonnet v2 via AWS Bedrock.
 
+## 開発ワークフロー
+
+### リポジトリへの変更ルール
+
+- **mainブランチへの直接push禁止**: リポジトリへの変更は必ずPRを作成し、レビュー依頼をしてください
+- **PRのレビュー必須**: すべてのPRはレビュー後にマージしてください
+- **恒久的な命令**: エージェントが覚えておくべき重要な命令はこのCLAUDE.mdに追加し、参照できるようにしてください
+
 ## Architecture
 
 ### Authentication
